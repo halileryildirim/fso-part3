@@ -31,10 +31,16 @@ let persons = [
 ];
 
 app.use(express.json());
-app.use(morgan("tiny"));
+morgan.token("body", (req) => {
+  return JSON.stringify(req.body);
+});
+
+const customMorganFormat =
+  ":method :url :status :res[content-length] - :response-time ms :body";
+app.use(morgan(customMorganFormat));
 
 app.get("/", (request, response) => {
-  response.send("<h1>Hello Personbook</h1>");
+  response.send("<h1>Personbook</h1>");
 });
 
 app.get("/api/persons", (request, response) => {
