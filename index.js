@@ -65,6 +65,38 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+const generateID = () => {
+  const maxID =
+    persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
+
+  return String(maxID + 1); //not recommended but still
+};
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+  const nameFound = persons.find(
+    (person) => person.name.toLowerCase() === body.name.toLowerCase()
+  );
+
+  if (!body.name || !body.number) {
+    return response.status(404).json({
+      error: "name or number missing",
+    });
+  }
+  if (nameFound) {
+    return response.status(404).json({
+      error: "name must be unique",
+    });
+  }
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateID(),
+  };
+  persons = persons.concat(person);
+  response.json(person);
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
