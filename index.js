@@ -43,43 +43,28 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(204).end();
+  // Person.findOneAndDelete(request.params.id).then((result) =>
+  //   response.status(204).end()
+  // );
 });
-
-const generateID = () => {
-  const maxID =
-    persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
-
-  return String(maxID + 1); //not recommended but still
-};
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
-  const nameFound = persons.find(
-    (person) => person.name.toLowerCase() === body.name.toLowerCase()
-  );
 
   if (!body.name || !body.number) {
     return response.status(404).json({
       error: "name or number missing",
     });
   }
-  if (nameFound) {
-    return response.status(404).json({
-      error: "name must be unique",
-    });
-  }
-  const person = {
+
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateID(),
-  };
-  persons = persons.concat(person);
+  });
 
-  response.json(person);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 const PORT = process.env.PORT;
