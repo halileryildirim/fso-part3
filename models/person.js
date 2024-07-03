@@ -22,7 +22,12 @@ const personSchema = new mongoose.Schema({
     minLength: 3,
     required: true,
   },
-  number: { type: String, required: true },
+  number: {
+    type: String,
+    minLength: 9,
+    validate: /^\d{2,}-\d{2,}$/, //Regex for having only numbers and at least 2 digits before and after "-"
+    required: true,
+  },
 });
 
 personSchema.set("toJSON", {
