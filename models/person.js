@@ -1,20 +1,20 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
+require('dotenv').config()
+const mongoose = require('mongoose')
 
-mongoose.set("strictQuery", false);
+mongoose.set('strictQuery', false)
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI
 
-console.log("connecting to", url);
+console.log('connecting to', url)
 
 mongoose
   .connect(url)
-  .then((result) => {
-    console.log("connected to mongoDB");
+  .then(() => {
+    console.log('connected to mongoDB')
   })
   .catch((error) => {
-    console.log("error connecting to mongodb", error.message);
-  });
+    console.log('error connecting to mongodb', error.message)
+  })
 
 const personSchema = new mongoose.Schema({
   name: {
@@ -25,17 +25,17 @@ const personSchema = new mongoose.Schema({
   number: {
     type: String,
     minLength: 9,
-    validate: /^\d{2,}-\d{2,}$/, //Regex for having only numbers and at least 2 digits before and after "-"
+    validate: /^\d{2,}-\d{2,}$/, //Regex for having only numbers and at least 2 digits before and after '-'
     required: true,
   },
-});
+})
 
-personSchema.set("toJSON", {
+personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
   },
-});
+})
 
-module.exports = mongoose.model("Person", personSchema);
+module.exports = mongoose.model('Person', personSchema)
